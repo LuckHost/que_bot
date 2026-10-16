@@ -173,9 +173,8 @@ async def user_swap_request_registrator(call: CallbackQuery, bot: Bot, callback_
 async def ping_all_users(bot: Bot, s):
     registered_users = funcs.get_registered_users()
     users = list(map(int, registered_users))
-    print(users)
+    logging.debug(f"Broadcast to {users}")
     for user_id in users:
-        print(user_id)
         try:
             await bot.send_message(chat_id=user_id, text=s)
         except exceptions.TelegramBadRequest:
@@ -188,10 +187,13 @@ async def ping_all_users(bot: Bot, s):
                 f"Sleep {e.retry_after} seconds."
             )
             await sleep(e.retry_after)
-            return await bot.send_message(chat_id=user_id, text=s)
+            try:
+                await bot.send_message(chat_id=user_id, text=s)
+            except exceptions.TelegramAPIError:
+                logging.exception(f"Target [ID:{user_id}]: failed after retry")
         except exceptions.TelegramAPIError:
             logging.exception(f"Target [ID:{user_id}]: failed")
-        except:
+        except Exception:
             logging.exception(f"Target [ID:{user_id}]: failed")
         else:
             logging.info(f"Target [ID:{user_id}]: success")

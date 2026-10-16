@@ -86,7 +86,7 @@ async def reply_processing(message: types.Message, bot: Bot):
                     await message.answer(f'Отложенные очереди',
                                          reply_markup=get_inline_timed_queues_control(queue_data))
                     return 0
-                except:
+                except Exception:
                     await message.answer('Неверный ввод данных очереди')
                     return 0
             if len(message.text) >= 20:
@@ -184,7 +184,10 @@ async def ping_all_users(bot: Bot, s):
                 f"Sleep {e.retry_after} seconds."
             )
             await sleep(e.retry_after)
-            return await bot.send_message(chat_id=user_id, text=s)
+            try:
+                await bot.send_message(chat_id=user_id, text=s)
+            except exceptions.TelegramAPIError:
+                logging.exception(f"Target [ID:{user_id}]: failed after retry")
         except exceptions.TelegramAPIError:
             logging.exception(f"Target [ID:{user_id}]: failed")
         else:
