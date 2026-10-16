@@ -1,3 +1,4 @@
+import html
 import logging
 
 from aiogram import types, Bot
@@ -136,13 +137,13 @@ async def user_swap_request_registrator(call: CallbackQuery, bot: Bot, callback_
         await call.message.answer('Вы не можете отправить запрос себе')
         await call.answer()
         return 0
-    user_1_msg = await call.message.answer(text=f'Вы отправили запрос {funcs.get_user_name_by_id(user_2_id)}\n'
+    user_1_msg = await call.message.answer(text=f'Вы отправили запрос {html.escape(funcs.get_user_name_by_id(user_2_id))}\n'
                                                 f'Запрос действителен 30 секунд. Отменить запрос /cancel')
 
     user_2_msg = await bot.send_message(
-        text=f'{funcs.get_user_name_by_id(user_1_id)} отправил вам запрос на смену мест в очереди {queue_name}\n'
+        text=f'{html.escape(funcs.get_user_name_by_id(user_1_id))} отправил вам запрос на смену мест в очереди {queue_name}\n'
              f'Ваше место: {user_2_pos}\n'
-             f'Место {funcs.get_user_name_by_id(user_1_id)}: {user_1_pos}\n'
+             f'Место {html.escape(funcs.get_user_name_by_id(user_1_id))}: {user_1_pos}\n'
              f'Запрос действителен 30 секунд. Принять запрос /swap'
              f'Отклонить /deni\n', chat_id=user_2_id)
 
@@ -151,13 +152,13 @@ async def user_swap_request_registrator(call: CallbackQuery, bot: Bot, callback_
     for i in range(1, 30):
         await sleep(1)
         await user_2_msg.edit_text(
-            text=f'{funcs.get_user_name_by_id(user_1_id)} отправил вам запрос на смену мест в очереди {queue_name}\n'
+            text=f'{html.escape(funcs.get_user_name_by_id(user_1_id))} отправил вам запрос на смену мест в очереди {queue_name}\n'
                  f'Ваше место: {user_2_pos}\n'
-                 f'Место {funcs.get_user_name_by_id(user_1_id)}: {user_1_pos}\n'
+                 f'Место {html.escape(funcs.get_user_name_by_id(user_1_id))}: {user_1_pos}\n'
                  f'Запрос действителен {30 - i} секунд.\n'
                  f'Принять запрос /swap\n'
                  f'Отклонить /deni\n')
-        await user_1_msg.edit_text(text=f'Вы отправили запрос {funcs.get_user_name_by_id(user_2_id)}\n'
+        await user_1_msg.edit_text(text=f'Вы отправили запрос {html.escape(funcs.get_user_name_by_id(user_2_id))}\n'
                                         f'Запрос действителен {30 - i} секунд. Отменить запрос /cancel')
         if not (user_1_id + '->' + user_2_id) in util_data.swap_requests.keys():
             await bot.delete_message(chat_id=user_1_msg.chat.id, message_id=user_1_msg.message_id)

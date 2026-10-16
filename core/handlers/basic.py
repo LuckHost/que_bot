@@ -1,3 +1,4 @@
+import html
 import logging
 
 from pathlib import Path
@@ -22,7 +23,7 @@ DOWNLOADS_DIR = Path(__file__).resolve().parent.parent / 'downloads'
 
 async def start_command(message: types.Message, bot: Bot):
     funcs.add_user_to_registered_users(dict(message.from_user), str(message.from_user.id))
-    await message.answer(f'Привет {message.from_user.first_name}. Это бот для работы с очередями',
+    await message.answer(f'Привет {html.escape(message.from_user.first_name)}. Это бот для работы с очередями',
                          reply_markup=reply_keyboard)
 
 
@@ -113,7 +114,7 @@ async def cancel_swap_request(message: types.Message, bot: Bot):
         funcs.find_first_swap_call(util_data.swap_requests, str(message.from_user.id))]
     util_data.swap_requests.pop(funcs.find_first_swap_call(util_data.swap_requests, str(message.from_user.id)))
     await message.answer(
-        f"Вы отменили запрос к {funcs.get_user_name_by_id(str(swap_request['message_to'].chat.id))}")
+        f"Вы отменили запрос к {html.escape(funcs.get_user_name_by_id(str(swap_request['message_to'].chat.id)))}")
 
 
 async def deni_swap_request(message: types.Message, bot: Bot):
@@ -124,7 +125,7 @@ async def deni_swap_request(message: types.Message, bot: Bot):
         funcs.find_last_swap_call(util_data.swap_requests, str(message.from_user.id))]
     util_data.swap_requests.pop(funcs.find_last_swap_call(util_data.swap_requests, str(message.from_user.id)))
     await message.answer(
-        f"Вы отклонили запрос {funcs.get_user_name_by_id(str(swap_request['message_from'].chat.id))}")
+        f"Вы отклонили запрос {html.escape(funcs.get_user_name_by_id(str(swap_request['message_from'].chat.id)))}")
 
 
 async def accepting_swap_request(message: types.Message, bot: Bot):
@@ -139,13 +140,13 @@ async def accepting_swap_request(message: types.Message, bot: Bot):
         await message.answer('Не удалось поменяться местами: кого-то из вас уже нет в этой очереди')
         return 0
     await message.answer(
-        f"Вы поменялись местом с {funcs.get_user_name_by_id(str(swap_request['message_from'].chat.id))}")
+        f"Вы поменялись местом с {html.escape(funcs.get_user_name_by_id(str(swap_request['message_from'].chat.id)))}")
     await message.answer(f"Очередь {swap_request['queue_name']}",
                          reply_markup=get_inline_users_in_queue(funcs.get_queue(swap_request['queue_name']),
                                                                 swap_request['queue_name'],
                                                                 str(swap_request['message_to'].chat.id)))
     await bot.send_message(chat_id=swap_request['message_from'].chat.id,
-                           text=f"Вы поменялись местом с {funcs.get_user_name_by_id(str(swap_request['message_to'].chat.id))}")
+                           text=f"Вы поменялись местом с {html.escape(funcs.get_user_name_by_id(str(swap_request['message_to'].chat.id)))}")
     await bot.send_message(chat_id=swap_request['message_from'].chat.id, text=f"Очередь {swap_request['queue_name']}",
                            reply_markup=get_inline_users_in_queue(funcs.get_queue(swap_request['queue_name']),
                                                                   swap_request['queue_name'],
