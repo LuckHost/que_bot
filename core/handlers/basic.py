@@ -1,5 +1,7 @@
 import logging
 
+from pathlib import Path
+
 from aiogram import types, Bot
 from aiogram import exceptions
 
@@ -14,6 +16,8 @@ from settings import ADMIN_ID
 from keyboards.inline import get_inline_queues_control, get_inline_queues_keyboard, get_inline_users_in_queue, \
     get_inline_timed_queues_control
 from utils.utils import util_data
+
+DOWNLOADS_DIR = Path(__file__).resolve().parent.parent / 'downloads'
 
 
 async def start_command(message: types.Message, bot: Bot):
@@ -38,7 +42,8 @@ async def view_queues_control_menu(message: types.Message, bot: Bot):
 async def get_photo(message: types.Message, bot: Bot):
     await message.answer('картинка')
     file = await bot.get_file(message.photo[-1].file_id)
-    await bot.download_file(file.file_path, 'downloads/photo.png')
+    DOWNLOADS_DIR.mkdir(exist_ok=True)
+    await bot.download_file(file.file_path, DOWNLOADS_DIR / 'photo.png')
 
 
 async def reply_processing(message: types.Message, bot: Bot):
