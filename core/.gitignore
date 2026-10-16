@@ -1,0 +1,8 @@
+/venv
+/.idea
+/__pycache__
+/settings.py
+/data_files/__pycache__
+/handlers/__pycache__
+/keyboards/__pycache__
+/utils/__pycache__
