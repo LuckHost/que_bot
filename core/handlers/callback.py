@@ -31,8 +31,9 @@ async def delete_user(call: CallbackQuery, bot: Bot, callback_data: UserDeletion
     user_id = callback_data.user_id
     queue_name = callback_data.queue_name
     position = funcs.get_user_pos(user_id, queue_name)
-    funcs.delete_user_from_queue(user_id, queue_name)
-    funcs.update_positions(queue_name, position)
+    # Повторное нажатие или старая кнопка: пользователя уже нет в очереди, сдвигать нечего
+    if funcs.delete_user_from_queue(user_id, queue_name) is True:
+        funcs.update_positions(queue_name, position)
     queue_list = funcs.read_json('queue_list.json')
     queue = queue_list[queue_name]
     await call.message.edit_text(f'Очередь {queue_name}',
