@@ -74,13 +74,14 @@ async def start():
     dp.message.register(view_all_queues, F.text == 'Очереди')
     dp.message.register(view_queues_control_menu, F.text == 'Управление очередями')
 
-    task1 = asyncio.create_task(timed_queues_processor(Token))
+    timed_queues_task = asyncio.create_task(timed_queues_processor(bot))
     try:
-        task2 = asyncio.create_task(dp.start_polling(bot))
-        await asyncio.gather(task2, task1)
+        await dp.start_polling(bot)
     finally:
-        task3 = asyncio.create_task(bot.session.close())
-        await asyncio.gather(task3)
+        # start_polling возвращается по SIGTERM/SIGINT; бесконечный цикл отложенных очередей
+        # нужно остановить явно, иначе процесс не завершится
+        timed_queues_task.cancel()
+        await bot.session.close()
 
 
 if __name__ == '__main__':

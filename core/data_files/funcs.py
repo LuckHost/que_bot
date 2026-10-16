@@ -249,9 +249,16 @@ def delete_queue(queue_name: str) -> (bool, str):
         return 'Queue_not_exist'
 
 
+def set_timed_queue_due(queue_name: str, due: str) -> None:
+    queue_list = read_json('timed_queues.json')
+    if queue_name in queue_list:
+        queue_list[queue_name]['due'] = due
+        write_json('timed_queues.json', queue_list)
+
+
 def delete_timed_queue(queue_name: str) -> None:
     queue_list = read_json('timed_queues.json')
-    queue_list.pop(queue_name)
+    queue_list.pop(queue_name, None)
     write_json('timed_queues.json', queue_list)
 
 
