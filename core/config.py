@@ -1,6 +1,7 @@
 import os
 
 from pathlib import Path
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from dotenv import load_dotenv
 
@@ -30,3 +31,14 @@ def _parse_admin_ids(value: str) -> list:
 
 TOKEN = _required('TOKEN')
 ADMIN_ID = _parse_admin_ids(_required('ADMIN_ID'))
+
+
+def _parse_timezone(value: str) -> ZoneInfo:
+    try:
+        return ZoneInfo(value)
+    except (ZoneInfoNotFoundError, ValueError):
+        raise SystemExit(f'Неизвестная таймзона BOT_TIMEZONE={value!r}, ожидается имя вида Asia/Krasnoyarsk')
+
+
+# Таймзона, в которой пользователи задают время отложенных очередей. От TZ системы не зависит.
+TIMEZONE = _parse_timezone(os.getenv('BOT_TIMEZONE', '').strip() or 'Asia/Krasnoyarsk')

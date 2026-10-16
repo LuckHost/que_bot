@@ -9,6 +9,8 @@ from aiogram.enums import ParseMode
 
 from handlers.basic import ping_all_users
 
+from config import TIMEZONE
+
 
 async def timed_queues_processor(Token):
     bot = Bot(Token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -16,8 +18,8 @@ async def timed_queues_processor(Token):
         queues = funcs.get_all_timed_queue_data()
         for i in range(len(queues)):
             print(queues[i][1]['time'], queues[i][1]['date'])
-            if (str(datetime.now().strftime("%H.%M")) == queues[i][1]['time']) and (
-                    str(datetime.now().date().day) == queues[i][1]['date']):
+            if (str(datetime.now(TIMEZONE).strftime("%H.%M")) == queues[i][1]['time']) and (
+                    str(datetime.now(TIMEZONE).date().day) == queues[i][1]['date']):
                 funcs.make_new_queue(queues[i][0])
                 await ping_all_users(bot, f"Создана очередь {queues[i][0]} {queues[i][1]['time']}")
                 funcs.delete_timed_queue(queues[i][0])
