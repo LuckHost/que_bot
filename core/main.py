@@ -28,11 +28,18 @@ Token = TOKEN
 
 async def start_bot(bot: Bot):
     await set_commands(bot)
-    await bot.send_message(ADMIN_ID[0], 'бот запущен')
+    try:
+        await bot.send_message(ADMIN_ID[0], 'бот запущен')
+    except Exception:
+        # Например, админ ни разу не писал боту: из-за этого бот не должен падать
+        logging.exception(f'Failed to notify admin [ID:{ADMIN_ID[0]}] about start')
 
 
 async def stop_bot(bot: Bot):
-    await bot.send_message(ADMIN_ID[0], 'бот опущен')
+    try:
+        await bot.send_message(ADMIN_ID[0], 'бот опущен')
+    except Exception:
+        logging.exception(f'Failed to notify admin [ID:{ADMIN_ID[0]}] about stop')
 
 
 dp = Dispatcher()
