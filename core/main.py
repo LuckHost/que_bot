@@ -1,4 +1,6 @@
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 
 import asyncio
 import logging
@@ -37,7 +39,7 @@ dp = Dispatcher()
 
 
 async def start():
-    bot = Bot(Token, parse_mode='HTML')
+    bot = Bot(Token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     logging.basicConfig(level=logging.NOTSET,
                         format="%(asctime)s - [%(levelname)s] - %(name)s - "
                                "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"

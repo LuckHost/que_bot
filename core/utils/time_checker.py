@@ -4,12 +4,14 @@ from data_files import funcs
 
 from asyncio import sleep
 from aiogram import types, Bot
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 
 from handlers.basic import ping_all_users
 
 
 async def timed_queues_processor(Token):
-    bot = Bot(Token, parse_mode='HTML')
+    bot = Bot(Token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     while True:
         queues = funcs.get_all_timed_queue_data()
         for i in range(len(queues)):
