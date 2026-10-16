@@ -1,3 +1,4 @@
+import logging
 import os
 
 from pathlib import Path
@@ -42,3 +43,12 @@ def _parse_timezone(value: str) -> ZoneInfo:
 
 # Таймзона, в которой пользователи задают время отложенных очередей. От TZ системы не зависит.
 TIMEZONE = _parse_timezone(os.getenv('BOT_TIMEZONE', '').strip() or 'Asia/Krasnoyarsk')
+
+
+def _parse_log_level(value: str) -> str:
+    if not isinstance(logging.getLevelName(value), int):
+        raise SystemExit(f'Неизвестный уровень логирования LOG_LEVEL={value!r}, ожидается DEBUG/INFO/WARNING/ERROR')
+    return value
+
+
+LOG_LEVEL = _parse_log_level(os.getenv('LOG_LEVEL', '').strip().upper() or 'INFO')
