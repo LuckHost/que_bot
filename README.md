@@ -81,10 +81,10 @@ journalctl -u queuebot -f          # логи
 1. Остановите бота на старом сервере. Два экземпляра с одним токеном работать не могут,
    а данные разъедутся.
 2. Скопируйте `core/data_files/queue_list.json`, `timed_queues.json` и `users_info.json`
-   со старого сервера в `/var/lib/queuebot/` на новом. Если каталога ещё нет,
-   один раз запустите и остановите сервис, либо создайте его вручную:
+   со старого сервера в `/var/lib/queuebot/` на новом:
    ```bash
    sudo systemctl stop queuebot
+   sudo install -d -o queuebot -g queuebot /var/lib/queuebot
    sudo cp queue_list.json timed_queues.json users_info.json /var/lib/queuebot/
    sudo chown queuebot:queuebot /var/lib/queuebot/*.json
    sudo systemctl start queuebot
