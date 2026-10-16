@@ -11,7 +11,7 @@ from handlers.callback import select_queue, delete_user, add_user, show_queues, 
     make_queue_call, spec_user_add_menu, spec_user_add, user_swap_request_registrator, timed_queues_menu, \
     show_queues_control_menu, delete_timed_queue, make_timed_queue_call
 
-from settings import TOKEN, ADMIN_ID
+from config import TOKEN, ADMIN_ID
 from aiogram.filters import Command
 from aiogram import F
 

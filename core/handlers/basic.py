@@ -11,7 +11,7 @@ from data_files import funcs
 
 from keyboards.reply import reply_keyboard
 
-from settings import ADMIN_ID
+from config import ADMIN_ID
 
 from keyboards.inline import get_inline_queues_control, get_inline_queues_keyboard, get_inline_users_in_queue, \
     get_inline_timed_queues_control
