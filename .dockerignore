@@ -1,0 +1,10 @@
+.env
+.git
+.idea
+venv
+.venv
+data
+deploy
+**/__pycache__
+core/downloads
+core/data_files/*.json

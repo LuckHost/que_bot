@@ -1,0 +1,17 @@
+services:
+  queuebot:
+    build: .
+    image: queuebot
+    container_name: queuebot
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATA_DIR: /data
+    volumes:
+      # json-файлы данных лежат на хосте в ./data (рядом с этим файлом)
+      - ./data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"

@@ -94,3 +94,25 @@ journalctl -u queuebot -f          # логи
    запуска нового бота: если время отложенной очереди прошло, пока бот был выключен, она сработает
    в этот день следующего месяца. После переноса проверьте список в «Управление очередями» →
    «Отложенные очереди».
+
+---
+
+## Деплой через Docker
+
+Альтернатива systemd-юниту. Нужны Docker и плагин compose.
+
+```bash
+git clone https://github.com/LuckHost/que_bot.git /opt/queuebot
+cd /opt/queuebot
+# положить сюда .env (см. .env.example)
+sed -i 's/\r$//' .env
+mkdir -p data && chown 10001:10001 data   # бот в контейнере работает под uid 10001
+docker compose up -d --build
+docker compose logs -f
+```
+
+Данные лежат на хосте в `./data` (`/opt/queuebot/data`): `queue_list.json`,
+`timed_queues.json`, `users_info.json`. Чтобы перенести данные, остановите старого бота,
+скопируйте json-файлы в `./data`, выполните `chown 10001:10001 data/*.json` и `docker compose restart`.
+
+Обновление: `git pull && docker compose up -d --build`.
