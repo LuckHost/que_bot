@@ -1,0 +1,33 @@
+# Пример юнита. Предполагается: код в /opt/queuebot, venv в /opt/queuebot/venv,
+# пользователь queuebot, настройки в /opt/queuebot/.env.
+# Установка: sudo cp deploy/queuebot.service /etc/systemd/system/ && sudo systemctl daemon-reload
+
+[Unit]
+Description=Telegram queue bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=queuebot
+Group=queuebot
+WorkingDirectory=/opt/queuebot/core
+EnvironmentFile=/opt/queuebot/.env
+# Данные вне каталога с кодом; systemd создаёт /var/lib/queuebot с владельцем queuebot.
+# Если DATA_DIR задан в .env, значение из .env важнее.
+Environment=DATA_DIR=/var/lib/queuebot
+StateDirectory=queuebot
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/queuebot/venv/bin/python main.py
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+# get_photo сохраняет картинки в core/downloads
+ReadWritePaths=-/opt/queuebot/core/downloads
+
+[Install]
+WantedBy=multi-user.target

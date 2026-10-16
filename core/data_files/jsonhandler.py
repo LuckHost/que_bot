@@ -2,12 +2,13 @@ import json
 import os
 import tempfile
 
-from pathlib import Path
-
-DATA_DIR = Path(__file__).resolve().parent
+from config import DATA_DIR
 
 
 def read_json(file_name: str) -> (list, dict):
+    # Все файлы данных — словари; отсутствующий файл (например, новый DATA_DIR) считаем пустым
+    if not (DATA_DIR / file_name).exists():
+        return {}
     with open(DATA_DIR / file_name, 'r', encoding='utf-8') as f:
         return json.load(f)
 

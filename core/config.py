@@ -52,3 +52,15 @@ def _parse_log_level(value: str) -> str:
 
 
 LOG_LEVEL = _parse_log_level(os.getenv('LOG_LEVEL', '').strip().upper() or 'INFO')
+
+
+def _parse_data_dir(value: str) -> Path:
+    path = Path(value).expanduser()
+    if not path.is_absolute():
+        path = BASE_DIR / path
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+# Каталог с queue_list.json, timed_queues.json и users_info.json
+DATA_DIR = _parse_data_dir(os.getenv('DATA_DIR', '').strip() or str(Path(__file__).resolve().parent / 'data_files'))
