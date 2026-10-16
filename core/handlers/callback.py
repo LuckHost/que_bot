@@ -164,7 +164,7 @@ async def user_swap_request_registrator(call: CallbackQuery, bot: Bot, callback_
             await bot.delete_message(chat_id=user_2_msg.chat.id, message_id=user_2_msg.message_id)
             await call.answer()
             return 0
-    util_data.swap_requests.pop(user_1_id + '->' + user_2_id)
+    util_data.swap_requests.pop(user_1_id + '->' + user_2_id, None)
     await bot.delete_message(chat_id=user_1_msg.chat.id, message_id=user_1_msg.message_id)
     await bot.delete_message(chat_id=user_2_msg.chat.id, message_id=user_2_msg.message_id)
 

@@ -134,8 +134,10 @@ async def accepting_swap_request(message: types.Message, bot: Bot):
     swap_request = util_data.swap_requests[
         funcs.find_last_swap_call(util_data.swap_requests, str(message.from_user.id))]
     util_data.swap_requests.pop(funcs.find_last_swap_call(util_data.swap_requests, str(message.from_user.id)))
-    funcs.swap_positions(str(swap_request['message_from'].chat.id), str(swap_request['message_to'].chat.id),
-                         swap_request['queue_name'])
+    if not funcs.swap_positions(str(swap_request['message_from'].chat.id), str(swap_request['message_to'].chat.id),
+                                swap_request['queue_name']):
+        await message.answer('Не удалось поменяться местами: кого-то из вас уже нет в этой очереди')
+        return 0
     await message.answer(
         f"Вы поменялись местом с {funcs.get_user_name_by_id(str(swap_request['message_from'].chat.id))}")
     await message.answer(f"Очередь {swap_request['queue_name']}",
@@ -147,7 +149,7 @@ async def accepting_swap_request(message: types.Message, bot: Bot):
     await bot.send_message(chat_id=swap_request['message_from'].chat.id, text=f"Очередь {swap_request['queue_name']}",
                            reply_markup=get_inline_users_in_queue(funcs.get_queue(swap_request['queue_name']),
                                                                   swap_request['queue_name'],
-                                                                  str(swap_request['message_to'].chat.id)))
+                                                                  str(swap_request['message_from'].chat.id)))
 
 
 async def show_help(message: types.Message, bot: Bot):

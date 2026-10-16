@@ -216,13 +216,17 @@ def delete_user_from_queue(user_id: str, queue_name: str) -> (bool, str):
         return 'No_user_in_queue'
 
 
-def swap_positions(user_1_id: str, user_2_id: str, queue_name: str) -> None:
+def swap_positions(user_1_id: str, user_2_id: str, queue_name: str) -> bool:
+    user_1_pos = get_user_pos(user_1_id, queue_name)
+    user_2_pos = get_user_pos(user_2_id, queue_name)
     queue_list = read_json('queue_list.json')
-    queue = queue_list[queue_name]
-    queue[get_user_pos(user_1_id, queue_name)], queue[get_user_pos(user_2_id, queue_name)] = queue[
-        get_user_pos(user_2_id, queue_name)], queue[get_user_pos(user_1_id, queue_name)]
-    queue_list[queue_name] = queue
+    queue = queue_list.get(queue_name)
+    # За время действия запроса очередь могли удалить, а кто-то из участников мог из неё выйти
+    if queue is None or user_1_pos not in queue or user_2_pos not in queue:
+        return False
+    queue[user_1_pos], queue[user_2_pos] = user_2_id, user_1_id
     write_json('queue_list.json', queue_list)
+    return True
 
 
 def make_new_queue(queue_name: str) -> (bool, str):
